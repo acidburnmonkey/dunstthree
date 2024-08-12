@@ -12,7 +12,7 @@
 
 ###### Volume Notifications ###
 function get_volume {
-    amixer -D pulse get Master | grep '%' | head -n 1 | cut -d '[' -f 2 | cut -d '%' -f 1
+    amixer sget Master | grep '%' | head -n 1 | cut -d '[' -f 2 | cut -d '%' -f 1
 }
 
 function send_notification_volume {
@@ -23,10 +23,10 @@ function send_notification_volume {
 ## Gets the volume icon for volume
     if [ $volume -ge  55 ]  
     then
-       local  icon=~/.config/i3/dunstthree/icons/audio-volume-high.svg 
+       local  icon=$HOME/.config/dunstthree/icons/audio-volume-high.svg 
          
     else
-        local icon=~/.config/i3/dunstthree/icons/audio-volume-medium.svg 
+        local icon=$HOME/.config/dunstthree/icons/audio-volume-medium.svg 
     fi
 
 #Generated notification
@@ -35,7 +35,7 @@ function send_notification_volume {
 }
 
 function check_mute {
-   amixer -D pulse get Master | awk 'NR== 6 {print $6}'   
+   amixer ssget Master | awk 'NR== 6 {print $6}'   
 }
 
 function send_notification_mute {
@@ -43,9 +43,9 @@ function send_notification_mute {
     declare -i volume=`get_volume`
 
     if [ $Pass = "[on]" ]; then
-         dunstify "Unmuted"  -h int:value:"$volume" -h string:synchronous:"$progres" -t 2000 -i ~/.config/i3/dunstthree/icons/audio-volume-medium.svg --replace=555
+         dunstify "Unmuted"  -h int:value:"$volume" -h string:synchronous:"$progres" -t 2000 -i ~/.config/dunstthree/icons/audio-volume-medium.svg --replace=555
      else
-         dunstify "Muted"  -t 2000 -i ~/.config/i3/dunstthree/icons/audio-volume-muted.svg --replace=555
+         dunstify "Muted"  -t 2000 -i ~/.config/dunstthree/icons/audio-volume-muted.svg --replace=555
     fi
 }
 
@@ -53,7 +53,7 @@ function send_notification_mute {
 # Brightness
 
 function get_brightness {
-  xbacklight -get | cut -d '.' -f 1
+brightnessctl | awk 'NR==2 {match($4, /[0-9]+/); print substr($4, RSTART, RLENGTH)}'
 }
 
 
@@ -62,7 +62,7 @@ function send_notification_bright {
      declare -i brightness=`get_brightness`
      progres=$(seq -s "─" $(($brightness/5)) | sed 's/[0-9]//g')
 
-     dunstify "$brightness" -h int:value:"$brightness" -h string:synchronous:"$progres" -t 2000 -i ~/.config/i3/dunstthree/icons/brightness.png   --replace=555
+     dunstify "$brightness" -h int:value:"$brightness" -h string:synchronous:"$progres" -t 2000 -i ~/.config/dunstthree/icons/brightness.png   --replace=555
 
 }
 
@@ -71,25 +71,25 @@ function send_notification_bright {
 case $1 in
     vup)
 	# Set the volume on (if it was muted)
-	amixer -D pulse sset Master 5%+ > /dev/null
+	amixer sset Master 5%+ > /dev/null
+	amixer  sset Master on > /dev/null
 	send_notification_volume
 	;;
     vdown)
-	amixer -D pulse set Master on > /dev/null
-	amixer -D pulse sset Master 5%- > /dev/null
+	amixer  sset Master 5%- > /dev/null
 	send_notification_volume
 	;;
     mute)
     	# Toggle mute
-	amixer -D pulse set Master 1+ toggle > /dev/null
+	amixer sset Master 1+ toggle > /dev/null
     send_notification_mute
 	;;
     bup)
-         xbacklight -inc 5
+        brightnessctl set 5%+
         send_notification_bright
         ;;
     bdown)
-         xbacklight -dec 5
+        brightnessctl set 5%- 
         send_notification_bright
         ;;
 

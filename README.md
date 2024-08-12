@@ -1,5 +1,5 @@
 # DunstThree 
- DunstThree is a script that sends notifications through dunst ; meant to be used with dunst + any window manager.
+DunstThree is a script that sends notifications through dunst ; meant to be used with dunst + any window manager like i3, hyprland or sway.
 
 ![](volhigh.png)
 
@@ -8,7 +8,7 @@
 ![](brightness.png)
 
 ## Manual Installation 
-1. Copy this repo into your ~/.config/i3 or ~/.config/dunstthree
+1. Copy this repo into your ~/.config/dunstthree
 
 2. Map script to your i3 config example :
 ```
