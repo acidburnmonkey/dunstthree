@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#call this scritpt as:
+#call this script as:
 # For volume
 #dunstthree.sh vup
 #dunstthree.sh vdonw
@@ -16,26 +16,26 @@ function get_volume {
 }
 
 function send_notification_volume {
-    
+
     declare -i volume=`get_volume`
-    progres=$(seq -s "─" $(($volume/5)) | sed 's/[0-9]//g')
+    progress=$(seq -s "─" $(($volume/5)) | sed 's/[0-9]//g')
 
 ## Gets the volume icon for volume
-    if [ $volume -ge  55 ]  
+    if [ $volume -ge  55 ]
     then
-       local  icon=$HOME/.config/dunstthree/icons/audio-volume-high.svg 
-         
+       local  icon=$HOME/.config/dunstthree/icons/audio-volume-high.svg
+
     else
-        local icon=$HOME/.config/dunstthree/icons/audio-volume-medium.svg 
+        local icon=$HOME/.config/dunstthree/icons/audio-volume-medium.svg
     fi
 
 #Generated notification
-     dunstify "$volume" -h int:value:"$volume" -h string:synchronous:"$progres" -t 2000 -i $icon   --replace=555
+     dunstify "$volume" -h int:value:"$volume" -h string:synchronous:"$progress" -t 2000 -i $icon   --replace=555
 
 }
 
 function check_mute {
-   amixer ssget Master | awk 'NR== 6 {print $6}'   
+   amixer ssget Master | awk 'NR== 6 {print $6}'
 }
 
 function send_notification_mute {
@@ -43,7 +43,7 @@ function send_notification_mute {
     declare -i volume=`get_volume`
 
     if [ $Pass = "[on]" ]; then
-         dunstify "Unmuted"  -h int:value:"$volume" -h string:synchronous:"$progres" -t 2000 -i ~/.config/dunstthree/icons/audio-volume-medium.svg --replace=555
+         dunstify "Unmuted"  -h int:value:"$volume" -h string:synchronous:"$progress" -t 2000 -i ~/.config/dunstthree/icons/audio-volume-medium.svg --replace=555
      else
          dunstify "Muted"  -t 2000 -i ~/.config/dunstthree/icons/audio-volume-muted.svg --replace=555
     fi
@@ -58,11 +58,11 @@ brightnessctl | awk 'NR==2 {match($4, /[0-9]+/); print substr($4, RSTART, RLENGT
 
 
 function send_notification_bright {
-    
-     declare -i brightness=`get_brightness`
-     progres=$(seq -s "─" $(($brightness/5)) | sed 's/[0-9]//g')
 
-     dunstify "$brightness" -h int:value:"$brightness" -h string:synchronous:"$progres" -t 2000 -i ~/.config/dunstthree/icons/brightness.png   --replace=555
+     declare -i brightness=`get_brightness`
+     progress=$(seq -s "─" $(($brightness/5)) | sed 's/[0-9]//g')
+
+     dunstify "$brightness" -h int:value:"$brightness" -h string:synchronous:"$progress" -t 2000 -i ~/.config/dunstthree/icons/brightness.png   --replace=555
 
 }
 
@@ -89,7 +89,7 @@ case $1 in
         send_notification_bright
         ;;
     bdown)
-        brightnessctl set 5%- 
+        brightnessctl set 5%-
         send_notification_bright
         ;;
 
